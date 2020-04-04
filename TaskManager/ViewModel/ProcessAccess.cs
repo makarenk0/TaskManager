@@ -29,6 +29,16 @@ namespace TaskManager.ViewModel
             get { return _processModel.ProcessObj; }
             set { _processModel.ProcessObj = value; }
         }
+
+        public ProcessThreadCollection ThreadsCollection
+        {
+            get { return _processModel.ThreadsCollection; }
+        }
+        public ProcessModuleCollection ModulesCollection
+        {
+            get { return _processModel.ModulesCollection; }
+        }
+
         public string ProcessName
         {
             get { return _processModel.ProcessName; }

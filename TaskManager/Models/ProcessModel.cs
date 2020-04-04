@@ -11,6 +11,7 @@ namespace TaskManager.Models
     {
         private Process _process;
         private ProcessThreadCollection _threads;
+        private ProcessModuleCollection _modules;
 
         private string _processName;
         private int _id;
@@ -41,9 +42,14 @@ namespace TaskManager.Models
                 _ramLoadCounter = new PerformanceCounter("Process", "Working Set", ProcessName, true);
                 ThreadsNumber = process.Threads.Count;
                 StartTime = process.StartTime;
-                _threads = process.Threads;
-            }
 
+                _threads = process.Threads;
+                try
+                {
+                    _modules = process.Modules;
+                }
+                catch{}
+            }
         }
 
         public Process ProcessObj
@@ -55,6 +61,10 @@ namespace TaskManager.Models
         public ProcessThreadCollection ThreadsCollection
         {
             get { return _threads; }
+        }
+        public ProcessModuleCollection ModulesCollection
+        {
+            get { return _modules; }
         }
 
         public string ProcessName {

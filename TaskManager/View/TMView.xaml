@@ -5,26 +5,68 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:TaskManager.View"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="600" d:DesignWidth="1200">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="200"></RowDefinition>
         </Grid.RowDefinitions>
-        <DataGrid Grid.Row="0" SelectionMode="Single" ItemsSource="{Binding AllProcesses.Processes, Mode=OneWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False">
+        <DataGrid Grid.Row="0" SelectionMode="Single" ItemsSource="{Binding AllProcesses, Mode=OneWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedItem}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Process name"  Binding="{Binding ProcessName, Mode=OneWay}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Process id"  Binding="{Binding ProcessId, Mode=OneWay}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Responding"  Binding="{Binding Responding, Mode=OneWay}"></DataGridTextColumn>
-                <DataGridTextColumn Header="% CPU"  Binding="{Binding CpuLoadPercentage, Mode=OneWay}"></DataGridTextColumn>
-                <DataGridTextColumn Header="% RAM"  Binding="{Binding RamLoadPercentage, Mode=OneWay}"></DataGridTextColumn>
-                <DataGridTextColumn Header="RAM load"  Binding="{Binding RamLoadVolume, Mode=OneWay}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Threads number"  Binding="{Binding ThreadsNumber, Mode=OneWay}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Owner"  Binding="{Binding UserOwnerName, Mode=OneWay}"></DataGridTextColumn>
-                <DataGridTextColumn Header="File"  Binding="{Binding SourceFile, Mode=OneWay}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Path"  Binding="{Binding SourceFileFullPath, Mode=OneWay}"></DataGridTextColumn>
-                <DataGridTextColumn Header="Start time"  Binding="{Binding StartTime, Mode=OneWay}"></DataGridTextColumn>
+                <DataGridTextColumn Width="100" Header="Process name"  Binding="{Binding ProcessName, Mode=OneWay}"></DataGridTextColumn>
+                <DataGridTextColumn Width="70" Header="Process id"  Binding="{Binding ProcessId, Mode=OneWay}"></DataGridTextColumn>
+                <DataGridTextColumn Width="80" Header="Responding"  Binding="{Binding Responding, Mode=OneWay}"></DataGridTextColumn>
+                <DataGridTextColumn Width="50" Header="% CPU"  Binding="{Binding CpuLoadPercentage, Mode=OneWay}"></DataGridTextColumn>
+                <DataGridTextColumn Width="50" Header="% RAM"  Binding="{Binding RamLoadPercentage, Mode=OneWay}"></DataGridTextColumn>
+                <DataGridTextColumn Width="70" Header="RAM load"  Binding="{Binding RamLoadVolume, Mode=OneWay}"></DataGridTextColumn>
+                <DataGridTextColumn Width="100" Header="Threads number"  Binding="{Binding ThreadsNumber, Mode=OneWay}"></DataGridTextColumn>
+                <DataGridTextColumn Width="80" Header="Owner"  Binding="{Binding UserOwnerName, Mode=OneWay}"></DataGridTextColumn>
+                <DataGridTextColumn Width="70" Header="File"  Binding="{Binding SourceFile, Mode=OneWay}"></DataGridTextColumn>
+                <DataGridTextColumn Width="150" Header="Path"  Binding="{Binding SourceFileFullPath, Mode=OneWay}"></DataGridTextColumn>
+                <DataGridTextColumn Width="130" Header="Start time"  Binding="{Binding StartTime, Mode=OneWay}"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <Grid Grid.Row="1"> <!-- Selected item grid -->
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"></ColumnDefinition>
+                <ColumnDefinition Width="400"></ColumnDefinition>
+                <ColumnDefinition Width="400"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Label VerticalAlignment="Center" Target="{Binding ElementName=ProcessNameBlock}" Grid.Row="0" Grid.Column="0">Process name: </Label>
+            <TextBlock Name="ProcessNameBlock" HorizontalAlignment="Right" Margin="0 0 15 0" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" Text="{Binding SelectedItem.ProcessName, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBlock>
+
+            <Label VerticalAlignment="Center" Target="{Binding ElementName=ProcessIdBlock}" Grid.Row="1" Grid.Column="0">Process id:</Label>
+            <TextBlock Name="ProcessIdBlock" HorizontalAlignment="Right" Margin="0 0 15 0" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Text="{Binding SelectedItem.ProcessId, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBlock>
+
+            <!--Modules-->
+            <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">Modules:</TextBlock>
+            <DataGrid Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" ItemsSource="{Binding SelectedItem.ModulesCollection, Mode=OneWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="150" Header="Module name"  Binding="{Binding ModuleName, Mode=OneWay}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="250" Header="Path to module"  Binding="{Binding FileName, Mode=OneWay}"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!--Threads-->
+            <TextBlock Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center">Threads:</TextBlock>
+            <DataGrid Grid.Row="1" Grid.Column="2" Grid.RowSpan="4" ItemsSource="{Binding SelectedItem.ThreadsCollection, Mode=OneWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="50" Header="Id"  Binding="{Binding Id, Mode=OneWay}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="150" Header="Thread state"  Binding="{Binding ThreadState, Mode=OneWay}"></DataGridTextColumn>
+                    <DataGridTextColumn Width="200" Header="Start Time"  Binding="{Binding StartTime, Mode=OneWay}"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+
+
+        </Grid>
     </Grid>
 </UserControl>

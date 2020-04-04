@@ -18,9 +18,19 @@ namespace TaskManager.ViewModel
         }
 
 
-        public ProcessesContainer AllProcesses
+        public ObservableCollection<ProcessAccess> AllProcesses
         {
-            get { return _container; }
+            get { return _container.Processes; }
+        }
+
+        public ProcessAccess SelectedItem
+        {
+            get { return _container.SelectedProcess; }
+            set 
+            { 
+                _container.SelectedProcess = value;
+                OnPropertyChanged();
+            }
         }
     }
 }

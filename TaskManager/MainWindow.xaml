@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TaskManager"
         xmlns:v="clr-namespace:TaskManager.View"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="1200">
     <Grid>
         <v:TMView></v:TMView>
     </Grid>

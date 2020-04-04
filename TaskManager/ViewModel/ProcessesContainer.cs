@@ -11,9 +11,10 @@ using TaskManager.Models;
 
 namespace TaskManager.ViewModel
 {
-    class ProcessesContainer
+    class ProcessesContainer : BaseViewModel
     {
         private ObservableCollection<ProcessAccess> _processes;
+        private ProcessAccess _selectedProcess;
         private readonly object _processesLock = new object();
 
         public ProcessesContainer()
@@ -21,13 +22,16 @@ namespace TaskManager.ViewModel
             InitializeAll();
         }
 
+        public ProcessAccess SelectedProcess
+        {
+            get { return _selectedProcess; }
+            set { _selectedProcess = value; }
+        }
+
         public ObservableCollection<ProcessAccess> Processes
         {
             get {
-                lock (_processesLock)
-                {
-                    return _processes;
-                }
+                return _processes; 
             }
         }
 
