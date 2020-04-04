@@ -6,12 +6,16 @@
              xmlns:local="clr-namespace:TaskManager.View"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1200">
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="200"></RowDefinition>
         </Grid.RowDefinitions>
         <DataGrid Grid.Row="0" SelectionMode="Single" ItemsSource="{Binding AllProcesses, Mode=OneWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False" SelectedItem="{Binding SelectedItem}">
+            <DataGrid.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{x:Static SystemColors.HighlightColor}"/>
+            </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn Width="100" Header="Process name"  Binding="{Binding ProcessName, Mode=OneWay}"></DataGridTextColumn>
                 <DataGridTextColumn Width="70" Header="Process id"  Binding="{Binding ProcessId, Mode=OneWay}"></DataGridTextColumn>
@@ -27,6 +31,7 @@
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Row="1"> <!-- Selected item grid -->
+            
             <Grid.RowDefinitions>
                 <RowDefinition></RowDefinition>
                 <RowDefinition></RowDefinition>
