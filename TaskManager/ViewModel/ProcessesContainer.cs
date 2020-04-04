@@ -17,6 +17,7 @@ namespace TaskManager.ViewModel
         private ProcessAccess _selectedProcess;
         private readonly object _processesLock = new object();
 
+        #region PublicMembers
         public ProcessesContainer()
         {
             InitializeAll();
@@ -35,6 +36,20 @@ namespace TaskManager.ViewModel
             }
         }
 
+        public void KillSelectedProcess()
+        {
+            
+            SelectedProcess.ProcessObj.Kill();
+            _processes.Remove(SelectedProcess);
+        }
+
+        public void OpenFolderOfSelectedProcess()
+        {
+            Process.Start(new ProcessStartInfo("explorer.exe", " /select, " + SelectedProcess.SourceFileFullPath));
+        }
+        #endregion
+
+        #region PrivateMembers
         private void InitializeAll()
         {
             _processes = new ObservableCollection<ProcessAccess>();
@@ -192,5 +207,7 @@ namespace TaskManager.ViewModel
                 }
             }
         }
+        #endregion
+
     }
 }

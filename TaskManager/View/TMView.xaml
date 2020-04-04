@@ -47,6 +47,9 @@
             <Label VerticalAlignment="Center" Target="{Binding ElementName=ProcessIdBlock}" Grid.Row="1" Grid.Column="0">Process id:</Label>
             <TextBlock Name="ProcessIdBlock" HorizontalAlignment="Right" Margin="0 0 15 0" VerticalAlignment="Center" Grid.Row="1" Grid.Column="0" Text="{Binding SelectedItem.ProcessId, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></TextBlock>
 
+            <Button Grid.Row="2" Height="30" Width="100" FontSize="20" Background="Red" Command="{Binding KillCommand}">Kill</Button>
+            <Button Grid.Row="3" Height="30" Width="100" FontSize="15" Background="White"  Command="{Binding OpenFolderCommand}">Open Folder</Button>
+            
             <!--Modules-->
             <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">Modules:</TextBlock>
             <DataGrid Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" ItemsSource="{Binding SelectedItem.ModulesCollection, Mode=OneWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}" AutoGenerateColumns="False">
