@@ -1,9 +1,5 @@
 ﻿using CSharpLab4.Tools.MVVM;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
-using TaskManager.Models;
 
 namespace TaskManager.ViewModel
 {
@@ -12,6 +8,29 @@ namespace TaskManager.ViewModel
         private ProcessesContainer _container;
         private RelayCommand<object> _killCommand;
         private RelayCommand<object> _openFolderCommand;
+
+
+
+        public TMViewModel()
+        {
+            _container = new ProcessesContainer();
+        }
+
+        #region ViewPropertiesAndCommands
+        public ObservableCollection<ProcessAccess> AllProcesses
+        {
+            get { return _container.Processes; }
+        }
+
+        public ProcessAccess SelectedItem
+        {
+            get { return _container.SelectedProcess; }
+            set 
+            { 
+                _container.SelectedProcess = value;
+                OnPropertyChanged();
+            }
+        }
 
         public RelayCommand<object> KillCommand
         {
@@ -30,41 +49,21 @@ namespace TaskManager.ViewModel
                     o => IsSelected()));
             }
         }
+        #endregion
 
         private bool IsSelected()
         {
             return SelectedItem != null;
         }
 
-        public void KillProcess(object obj)
+        private void KillProcess(object obj)
         {
             _container.KillSelectedProcess();
         }
 
-        public void OpenProcessFolder(object obj)
+        private void OpenProcessFolder(object obj)
         {
             _container.OpenFolderOfSelectedProcess();
-        }
-
-        public TMViewModel()
-        {
-            _container = new ProcessesContainer();
-        }
-
-
-        public ObservableCollection<ProcessAccess> AllProcesses
-        {
-            get { return _container.Processes; }
-        }
-
-        public ProcessAccess SelectedItem
-        {
-            get { return _container.SelectedProcess; }
-            set 
-            { 
-                _container.SelectedProcess = value;
-                OnPropertyChanged();
-            }
         }
     }
 }

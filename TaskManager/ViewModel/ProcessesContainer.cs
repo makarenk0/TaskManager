@@ -7,7 +7,6 @@ using System.Linq;
 using System.Management;
 using System.Threading.Tasks;
 using System.Windows;
-using TaskManager.Models;
 
 namespace TaskManager.ViewModel
 {
@@ -15,7 +14,7 @@ namespace TaskManager.ViewModel
     {
         private ObservableCollection<ProcessAccess> _processes;
         private ProcessAccess _selectedProcess;
-        private readonly object _processesLock = new object();
+        private static readonly object _processesLock = new object();
 
         #region PublicMembers
         public ProcessesContainer()
@@ -126,7 +125,7 @@ namespace TaskManager.ViewModel
                             Application.Current.Dispatcher.BeginInvoke(new Action(() => _processes.Add(newProcess)));
                         }
                     }
-                    catch(System.ArgumentException) { }
+                    catch(System.ArgumentException) {}
                 }
             }
         }
@@ -140,7 +139,7 @@ namespace TaskManager.ViewModel
             processSearcher.Query = processQueryObject;
 
             ManagementObjectCollection foundProcessesList = processSearcher.Get();
-            return foundProcessesList; // get processes with id
+            return foundProcessesList; 
         }
 
         private void ProcessStopEvent(object sender, EventArrivedEventArgs e)
@@ -152,11 +151,16 @@ namespace TaskManager.ViewModel
                 UInt32 processId = (UInt32)targetInstance.Properties["ProcessId"].Value;
                 foreach (ProcessAccess stoppedProcess in _processes.ToList())
                 {
-                    if((UInt32)stoppedProcess.ProcessId == processId)
+                    try
                     {
-                        Application.Current.Dispatcher.BeginInvoke
-                        (new Action(() => _processes.Remove(stoppedProcess)));
+                        if ((UInt32)stoppedProcess.ProcessId == processId)
+                        {
+                            Application.Current.Dispatcher.BeginInvoke
+                            (new Action(() => _processes.Remove(stoppedProcess)));
+                        }
                     }
+                    catch(NullReferenceException) { }
+                    
                 }
                 
             }
@@ -166,16 +170,22 @@ namespace TaskManager.ViewModel
         private string[] GetProcessAdditionalInfo(ManagementObject obj)
         {
            string[] result = new string[2];
-            #region OwnerName
-            string[] argList = new string[] { string.Empty, string.Empty };
-            int returnVal = Convert.ToInt32(obj.InvokeMethod("GetOwner", argList));
-            if (returnVal == 0){ result[0] = argList[0]; }
-            else { result[0] = ""; }
-            #endregion
 
             #region SourceFile
-             result[1] = (string)obj["ExecutablePath"];
+            result[1] = (string)obj["ExecutablePath"];
             #endregion
+
+            #region OwnerName
+            if (result[1] != null)
+            {
+                string[] argList = new string[] { string.Empty, string.Empty };
+                int returnVal = Convert.ToInt32(obj.InvokeMethod("GetOwner", argList));
+                if (returnVal == 0) { result[0] = argList[0]; }
+                else { result[0] = ""; }
+            }
+            #endregion
+
+            
 
             return result;
         }
@@ -194,8 +204,8 @@ namespace TaskManager.ViewModel
         {
             lock (_processesLock)
             {
-                var models = _processes.ToList();
-                foreach (ProcessAccess processModel in models)
+                
+                foreach (ProcessAccess processModel in _processes.ToList())
                 {
                     if (!processModel.ProcessObj.HasExited)
                     {

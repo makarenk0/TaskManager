@@ -1,8 +1,7 @@
 ﻿using CSharpLab4.Tools.MVVM;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Text;
 using TaskManager.Models;
 
 namespace TaskManager.ViewModel
@@ -10,6 +9,7 @@ namespace TaskManager.ViewModel
     class ProcessAccess : BaseViewModel
     {
         private ProcessModel _processModel;
+
         private static UInt64 _totalPhysicalRam;
 
         public ProcessAccess(Process newProcess, string[] additionalInfo)
@@ -17,6 +17,11 @@ namespace TaskManager.ViewModel
             _processModel = new ProcessModel(newProcess);
             UserOwnerName = additionalInfo[0];
             SourceFileFullPath = additionalInfo[1];
+
+            if (UserOwnerName != null)
+            {
+                _processModel.ModulesCollection = newProcess.Modules;
+            }
         }
 
         public static UInt64 TotalPhysicalRam
@@ -30,7 +35,7 @@ namespace TaskManager.ViewModel
             set { _processModel.ProcessObj = value; }
         }
 
-        public ProcessThreadCollection ThreadsCollection
+        public ObservableCollection<ThreadModel> ThreadsCollection
         {
             get { return _processModel.ThreadsCollection; }
         }
@@ -42,12 +47,10 @@ namespace TaskManager.ViewModel
         public string ProcessName
         {
             get { return _processModel.ProcessName; }
-            set { _processModel.ProcessName = value; }
         }
         public int ProcessId
         {
             get { return _processModel.ProcessId; }
-            set { _processModel.ProcessId = value; }
         }
         public bool Responding
         {
@@ -104,17 +107,17 @@ namespace TaskManager.ViewModel
         public string UserOwnerName
         {
             get { return _processModel.UserOwnerName; }
-            set { _processModel.UserOwnerName = value; }
+            private set { _processModel.UserOwnerName = value; }
         }
         public string SourceFile
         {
             get { return _processModel.SourceFile; }
-            set { _processModel.SourceFile = value; }
+            private set { _processModel.SourceFile = value; }
         }
         public string SourceFileFullPath
         {
             get { return _processModel.SourceFileFullPath; }
-            set {
+            private set {
                 _processModel.SourceFileFullPath = value;
                 if (!String.IsNullOrEmpty(value))
                 {
@@ -126,7 +129,6 @@ namespace TaskManager.ViewModel
         public DateTime StartTime
         {
             get { return _processModel.StartTime; }
-            set { _processModel.StartTime = value; }
         }
     }
 }

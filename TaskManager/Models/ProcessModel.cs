@@ -1,16 +1,16 @@
-﻿using CSharpLab4.Tools.MVVM;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
-using System.Text;
+
 
 namespace TaskManager.Models
 {
     class ProcessModel
     {
         private Process _process;
-        private ProcessThreadCollection _threads;
+        
+
+        private ObservableCollection<ThreadModel> _threads;  //not ProcessThreadsCollection because want to override properties to handle StartTimeException (Win32AccessDenied)
         private ProcessModuleCollection _modules;
 
         private string _processName;
@@ -33,22 +33,20 @@ namespace TaskManager.Models
         public ProcessModel(Process process)
         {
             ProcessObj = process;
-            if (!process.HasExited)
-            {
-                ProcessName = process.ProcessName;
-                ProcessId = process.Id;
-                Responding = process.Responding;
-                _cpuLoadCounter = new PerformanceCounter("Process", "% Processor Time", ProcessName, true);
-                _ramLoadCounter = new PerformanceCounter("Process", "Working Set", ProcessName, true);
-                ThreadsNumber = process.Threads.Count;
-                StartTime = process.StartTime;
+           
+            ProcessName = process.ProcessName;
+            ProcessId = process.Id;
+            Responding = process.Responding;
+            _cpuLoadCounter = new PerformanceCounter("Process", "% Processor Time", ProcessName, true);
+            _ramLoadCounter = new PerformanceCounter("Process", "Working Set", ProcessName, true);
+            ThreadsNumber = process.Threads.Count;
+            StartTime = process.StartTime;
 
-                _threads = process.Threads;
-                try
-                {
-                    _modules = process.Modules;
-                }
-                catch{}
+            _threads = new ObservableCollection<ThreadModel>();
+
+            foreach (ProcessThread t in process.Threads)
+            {
+                _threads.Add(new ThreadModel(t));
             }
         }
 
@@ -58,23 +56,24 @@ namespace TaskManager.Models
             set { _process = value; }
         }
 
-        public ProcessThreadCollection ThreadsCollection
+        public ObservableCollection<ThreadModel> ThreadsCollection
         {
             get { return _threads; }
         }
         public ProcessModuleCollection ModulesCollection
         {
             get { return _modules; }
+            set { _modules = value; }
         }
 
         public string ProcessName {
             get{ return _processName; }
-            set { _processName = value; }
+            private set { _processName = value; }
         }
         public int ProcessId
         {
             get { return _id; }
-            set { _id = value; }
+            private set { _id = value; }
         }
         public bool Responding
         {
@@ -130,7 +129,7 @@ namespace TaskManager.Models
         public DateTime StartTime
         {
             get { return _startTime; }
-            set { _startTime = value; }
+            private set { _startTime = value; }
         }
     }
 }
